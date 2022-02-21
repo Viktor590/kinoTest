@@ -1,3 +1,5 @@
-import * as flsFunction from "./modules/functions.js";
+import kinoTest from './modules/kinoTest.js';
 
-flsFunction.isWebp();
+window.addEventListener("DOMContentLoaded", () => {
+  kinoTest();
+})
