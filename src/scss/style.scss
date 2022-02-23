@@ -2,6 +2,7 @@
 
 .wrapper {
   background: #22313f;
+  min-height: 100vh;
 }
 
 .container {
@@ -43,10 +44,37 @@
   grid-gap: 30px;
 }
 
+.spinner {
+  display: none;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+  border: solid 20px #ffe608;
+  border-radius: 50%;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  animation: spin 1s infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(180deg) scale(1.5);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .card {
   position: relative;
 
   &__img {
+    height: 500px;
     object-fit: cover;
   }
 
@@ -55,11 +83,23 @@
     top: 20px;
     left: 30px;
     font-size: 20px;
-    border: 2px solid #f0c70f;
+    border: 2px solid;
     border-radius: 50%;
     padding: 10px;
     background: #000;
     color: #fff;
+
+    &.green {
+      border-color: #5ef307;
+    }
+
+    &.orange {
+      border-color: #f3db07;
+    }
+
+    &.red {
+      border-color: #eb0b0b;
+    }
   }
 
   &__title {
