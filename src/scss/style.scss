@@ -3,6 +3,7 @@
 .wrapper {
   background: #22313f;
   min-height: 100vh;
+  position: relative;
 }
 
 .container {
@@ -76,6 +77,13 @@
   &__img {
     height: 500px;
     object-fit: cover;
+    cursor: pointer;
+    transition: all .3s;
+
+    &:hover {
+      box-shadow: 0px 1px 43px 0px rgba(131, 73, 231, 0.46);
+      height: 503px;
+    }
   }
 
   &__rating {
@@ -111,5 +119,60 @@
   &__genre {
     font-size: 20px;
     color: rgb(234, 250, 18)
+  }
+}
+
+.show-wrapper {
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: none;
+  background: rgba(0, 0, 0, 0.5) // background: rgb(128, 132, 136, .7);
+}
+
+.description {
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.show {
+  display: flex;
+  position: absolute;
+  background: rgb(5, 11, 61);
+  width: 700px;
+  height: 600px;
+
+  &__top-poster {
+    width: 300px;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+
+    &-close {
+      height: 30px;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      cursor: pointer;
+    }
+
+    &-title {
+      text-align: center;
+      font-size: 40px;
+      color: #fff;
+      margin-bottom: 40px;
+    }
+
+    &-dscr {
+      font-size: 20px;
+      color: #fff;
+      padding: 10px 30px;
+    }
   }
 }
