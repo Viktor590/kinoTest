@@ -1,32 +1,31 @@
 const kinoTest = () => {
   const API_KEY = "8c8e1a50-6322-4135-8875-5d40a5420d86";
-  const API_POPULAR = "https://kinopoiskapiunofficial.tech/api/v2.2/films/top?type=TOP_100_POPULAR_FILMS&page=1";
+  const API_POPULAR = `https://kinopoiskapiunofficial.tech/api/v2.2/films/top?type=TOP_100_POPULAR_FILMS`;
   const API_SEARCH = "https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword?keyword=";
   const API_SEARCH_ID = 'https://kinopoiskapiunofficial.tech/api/v2.2/films/';
+
+  let paginationUrl = API_POPULAR;
 
   const wrapper = document.querySelector('.wrapper');
   const input = document.querySelector('.input');
   const sendButton = document.querySelector('.button');
   const cardBlock = document.querySelector('.bottom');
-  const spinner = document.querySelector('.spinner')
+  const spinner = document.querySelector('.spinner');
+  const loadMore = document.querySelector('.load__more-btn');
 
   const showBlock = document.createElement('div');
   showBlock.classList.add('show-wrapper');
-
+  let currentPage = 2;
   showStartPage(API_POPULAR)
   getItemsImages()
 
   function showStartPage(popular) {
     getFilms(popular)
       .then(data => {
+        console.log(data);
         data.films.forEach(({ genres, nameRu, posterUrlPreview, rating }) => {
-          let currentRating = rating;
-          if (rating == 'null') {
-            currentRating = '4.5'
-          } else if (rating.length > 3) {
-            currentRating = `${rating[0]}.${rating[1]}`
-          }
-          createCard(posterUrlPreview, currentRating, nameRu, genres)
+
+          createCard(posterUrlPreview, correctRating(rating), nameRu, genres)
 
         })
       })
@@ -50,7 +49,7 @@ const kinoTest = () => {
     })
 
     if (res.status == 200) {
-      spinner.style.display = ''
+      spinner.style.display = '';
       return await res.json()
     }
 
@@ -58,6 +57,16 @@ const kinoTest = () => {
 
   function clearCard() {
     cardBlock.innerHTML = "";
+  }
+
+  function correctRating(item) {
+    let currentRating = item;
+    if (item === 'null' || item === null) {
+      currentRating = '4.5'
+    } else if (item.length > 3) {
+      currentRating = `${item[0]}.${item[1]}`
+    }
+    return currentRating;
   }
 
   function checkRating(num) {
@@ -96,18 +105,12 @@ const kinoTest = () => {
   }
 
   function searchFlims() {
-    const searchUrl = `${API_SEARCH}${input.value}`
-
-    getFilms(searchUrl)
+    paginationUrl = `${API_SEARCH}${input.value}`
+    getFilms(paginationUrl)
       .then(data => {
+        console.log(data);
         data.films.forEach(({ genres, nameRu, posterUrlPreview, rating }) => {
-          let currentRating = rating;
-          if (rating == 'null') {
-            currentRating = '4.5'
-          } else if (rating.length > 3) {
-            currentRating = `${rating[0]}.${rating[1]}`
-          }
-          createCard(posterUrlPreview, currentRating, nameRu, genres)
+          createCard(posterUrlPreview, correctRating(rating), nameRu, genres)
         })
 
       })
@@ -174,5 +177,11 @@ const kinoTest = () => {
       left: ${showPositionLeft}px;
     `;
   }
+
+  loadMore.addEventListener('click', () => {
+    showStartPage(`${paginationUrl}&page=${currentPage}`)
+    currentPage++
+  })
+
 }
 export default kinoTest;

@@ -176,3 +176,13 @@
     }
   }
 }
+
+.load__more {
+  display: flex;
+  justify-content: center;
+  padding: 35px 0;
+
+  // &-btn {
+  //   display: none;
+  // }
+}
