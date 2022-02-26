@@ -7,6 +7,7 @@ const kinoTest = () => {
   let paginationUrl = API_POPULAR;
 
   const wrapper = document.querySelector('.wrapper');
+  const titleLink = document.querySelector('.top__title');
   const input = document.querySelector('.input');
   const sendButton = document.querySelector('.button');
   const cardBlock = document.querySelector('.bottom');
@@ -19,16 +20,20 @@ const kinoTest = () => {
   showStartPage(API_POPULAR)
   getItemsImages()
 
+  titleLink.addEventListener('click', () => {
+    location.reload()
+  })
+
   function showStartPage(popular) {
     getFilms(popular)
       .then(data => {
-        console.log(data);
         data.films.forEach(({ genres, nameRu, posterUrlPreview, rating }) => {
 
           createCard(posterUrlPreview, correctRating(rating), nameRu, genres)
 
         })
       })
+      .catch(() => showError())
   }
 
   sendButton.addEventListener('click', (e) => {
@@ -38,6 +43,17 @@ const kinoTest = () => {
     searchFlims()
   })
 
+  function showError() {
+    spinner.style.display = '';
+    loadMore.style.display = 'none';
+    const errBlock = document.createElement('h4');
+    errBlock.classList.add('error')
+    errBlock.textContent = 'Извините произошла ошибка, попробуйте еще раз';
+    wrapper.append(errBlock)
+    setTimeout(() => {
+      errBlock.remove()
+    }, 3000)
+  }
 
   async function getFilms(url) {
     spinner.style.display = 'block'
@@ -48,10 +64,8 @@ const kinoTest = () => {
       },
     })
 
-    if (res.status == 200) {
-      spinner.style.display = '';
-      return await res.json()
-    }
+    spinner.style.display = '';
+    return await res.json()
 
   }
 
@@ -108,12 +122,19 @@ const kinoTest = () => {
     paginationUrl = `${API_SEARCH}${input.value}`
     getFilms(paginationUrl)
       .then(data => {
-        console.log(data);
+
+        if (data.searchFilmsCountResult < 20) {
+          loadMore.style.display = 'none';
+        } else {
+          loadMore.style.display = '';
+        }
+
         data.films.forEach(({ genres, nameRu, posterUrlPreview, rating }) => {
           createCard(posterUrlPreview, correctRating(rating), nameRu, genres)
         })
 
       })
+      .catch(() => showError())
   }
 
   function getItemsImages() {
@@ -136,6 +157,7 @@ const kinoTest = () => {
       <div class="show">
         <img class="show__top-poster" src=${poster}
           alt="poster">
+          
         <div class="show__content">
           <img class="show__content-close" src="img/close.svg" alt="close">
           <h2 class="show__content-title">${title}</h2>
@@ -149,13 +171,17 @@ const kinoTest = () => {
 
     wrapper.append(showBlock);
     addContentStyle();
-    const closeBtn = document.querySelector('.show__content-close');
-    closeBtn.addEventListener('click', () => {
-      showBlock.style.display = '';
-      document.body.style.cssText = `
-      overflow: '';
-      margin-right: 0
-    `;
+    document.addEventListener('click', (e) => {
+      console.log(e.target);
+      if (e.target.classList.contains('show__content-close')
+        || e.target.classList.contains('show-wrapper')) {
+        showBlock.style.display = '';
+        document.body.style.cssText = `
+          overflow: '';
+          margin-right: 0
+        `;
+      }
+
     })
 
   }
